@@ -5,6 +5,7 @@ export interface User {
   email: string;
   displayName: string;
   bio?: string;
+  passwordHash: string;
 }
 
 const userSchema = new Schema<User>(
@@ -19,6 +20,7 @@ const userSchema = new Schema<User>(
     },
     displayName: { type: String, required: true, trim: true },
     bio: { type: String, trim: true },
+    passwordHash: { type: String, required: true, select: false },
   },
   { timestamps: true },
 );

@@ -1,3 +1,4 @@
+import { hash } from 'bcryptjs';
 import mongoose from 'mongoose';
 import { connectDatabase } from '../config/database.js';
 import { ActivityModel } from '../models/activity.js';
@@ -10,30 +11,35 @@ async function seedDatabase(): Promise<void> {
   try {
     await connectDatabase();
 
+    const demoPasswordHash = await hash('octofit-demo', 12);
     const userFixtures = [
       {
         username: 'alex.runner',
         email: 'alex.runner@example.test',
         displayName: 'Alex Runner',
         bio: 'Enjoys running and strength training.',
+        passwordHash: demoPasswordHash,
       },
       {
         username: 'sam.stride',
         email: 'sam.stride@example.test',
         displayName: 'Sam Stride',
         bio: 'Training for a first half marathon.',
+        passwordHash: demoPasswordHash,
       },
       {
         username: 'taylor.trail',
         email: 'taylor.trail@example.test',
         displayName: 'Taylor Trail',
         bio: 'Weekend hiker and cyclist.',
+        passwordHash: demoPasswordHash,
       },
       {
         username: 'jordan.cycle',
         email: 'jordan.cycle@example.test',
         displayName: 'Jordan Cycle',
         bio: 'Likes long rides and outdoor workouts.',
+        passwordHash: demoPasswordHash,
       },
     ];
 
@@ -52,11 +58,13 @@ async function seedDatabase(): Promise<void> {
       {
         name: 'Pace Setters',
         description: 'A team focused on steady progress and running.',
+        createdBy: alex._id,
         members: [alex._id, sam._id],
       },
       {
         name: 'Trail Blazers',
         description: 'A team for outdoor training and cycling.',
+        createdBy: taylor._id,
         members: [taylor._id, jordan._id],
       },
     ];
