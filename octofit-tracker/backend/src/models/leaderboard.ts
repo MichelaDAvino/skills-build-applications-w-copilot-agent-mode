@@ -7,7 +7,7 @@ export interface LeaderboardEntry {
   rank: number;
 }
 
-const leaderboardSchema = new Schema<LeaderboardEntry>(
+const leaderboardSchema = new Schema(
   {
     user: {
       type: Schema.Types.ObjectId,
@@ -24,7 +24,7 @@ const leaderboardSchema = new Schema<LeaderboardEntry>(
 
 leaderboardSchema.index({ rank: 1 });
 
-export const LeaderboardModel = mongoose.model<LeaderboardEntry>(
+export const LeaderboardModel = mongoose.model(
   'LeaderboardEntry',
   leaderboardSchema,
 );

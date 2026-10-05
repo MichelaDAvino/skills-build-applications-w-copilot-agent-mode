@@ -10,6 +10,13 @@ import { WorkoutModel } from '../models/workout.js';
 async function seedDatabase(): Promise<void> {
   try {
     await connectDatabase();
+    console.log('Seed the octofit_db database with test data');
+
+    const user = UserModel;
+    const team = TeamModel;
+    const activity = ActivityModel;
+    const leaderboard = LeaderboardModel;
+    const workout = WorkoutModel;
 
     const demoPasswordHash = await hash('octofit-demo', 12);
     const userFixtures = [
@@ -44,15 +51,20 @@ async function seedDatabase(): Promise<void> {
     ];
 
     const users = await Promise.all(
-      userFixtures.map((fixture) =>
-        UserModel.findOneAndUpdate(
-          { email: fixture.email },
+      userFixtures.map(async (fixture) => {
+        const existing = await user.findOne({ email: fixture.email });
+        if (!existing) return user.create(fixture);
+        return user.findOneAndUpdate(
+          { _id: existing._id },
           { $set: fixture },
-          { upsert: true, new: true, runValidators: true },
-        ),
-      ),
+          { new: true, runValidators: true },
+        );
+      }),
     );
     const [alex, sam, taylor, jordan] = users;
+    if (!alex || !sam || !taylor || !jordan) {
+      throw new Error('Failed to create or update seeded users');
+    }
 
     const teamFixtures = [
       {
@@ -69,15 +81,20 @@ async function seedDatabase(): Promise<void> {
       },
     ];
     const teams = await Promise.all(
-      teamFixtures.map((fixture) =>
-        TeamModel.findOneAndUpdate(
-          { name: fixture.name },
+      teamFixtures.map(async (fixture) => {
+        const existing = await team.findOne({ name: fixture.name });
+        if (!existing) return team.create(fixture);
+        return team.findOneAndUpdate(
+          { _id: existing._id },
           { $set: fixture },
-          { upsert: true, new: true, runValidators: true },
-        ),
-      ),
+          { new: true, runValidators: true },
+        );
+      }),
     );
     const [paceSetters, trailBlazers] = teams;
+    if (!paceSetters || !trailBlazers) {
+      throw new Error('Failed to create or update seeded teams');
+    }
 
     const activityFixtures = [
       {
@@ -119,17 +136,20 @@ async function seedDatabase(): Promise<void> {
     ];
 
     await Promise.all(
-      activityFixtures.map((fixture) =>
-        ActivityModel.findOneAndUpdate(
-          {
+      activityFixtures.map(async (fixture) => {
+        const key = {
             user: fixture.user,
             activityType: fixture.activityType,
             performedAt: fixture.performedAt,
-          },
+          };
+        const existing = await activity.findOne(key);
+        if (!existing) return activity.create(fixture);
+        return activity.findOneAndUpdate(
+          { _id: existing._id },
           { $set: fixture },
-          { upsert: true, new: true, runValidators: true },
-        ),
-      ),
+          { new: true, runValidators: true },
+        );
+      }),
     );
 
     const leaderboardFixtures = [
@@ -139,13 +159,15 @@ async function seedDatabase(): Promise<void> {
       { user: jordan._id, team: trailBlazers._id, points: 50, rank: 2 },
     ];
     await Promise.all(
-      leaderboardFixtures.map((fixture) =>
-        LeaderboardModel.findOneAndUpdate(
-          { user: fixture.user },
+      leaderboardFixtures.map(async (fixture) => {
+        const existing = await leaderboard.findOne({ user: fixture.user });
+        if (!existing) return leaderboard.create(fixture);
+        return leaderboard.findOneAndUpdate(
+          { _id: existing._id },
           { $set: fixture },
-          { upsert: true, new: true, runValidators: true },
-        ),
-      ),
+          { new: true, runValidators: true },
+        );
+      }),
     );
 
     const workoutFixtures = [
@@ -175,13 +197,15 @@ async function seedDatabase(): Promise<void> {
       },
     ];
     await Promise.all(
-      workoutFixtures.map((fixture) =>
-        WorkoutModel.findOneAndUpdate(
-          { title: fixture.title },
+      workoutFixtures.map(async (fixture) => {
+        const existing = await workout.findOne({ title: fixture.title });
+        if (!existing) return workout.create(fixture);
+        return workout.findOneAndUpdate(
+          { _id: existing._id },
           { $set: fixture },
-          { upsert: true, new: true, runValidators: true },
-        ),
-      ),
+          { new: true, runValidators: true },
+        );
+      }),
     );
 
     console.log(

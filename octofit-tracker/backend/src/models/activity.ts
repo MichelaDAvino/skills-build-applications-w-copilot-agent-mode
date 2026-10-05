@@ -10,7 +10,7 @@ export interface Activity {
   performedAt: Date;
 }
 
-const activitySchema = new Schema<Activity>(
+const activitySchema = new Schema(
   {
     user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     team: { type: Schema.Types.ObjectId, ref: 'Team' },
@@ -23,4 +23,4 @@ const activitySchema = new Schema<Activity>(
   { timestamps: true },
 );
 
-export const ActivityModel = mongoose.model<Activity>('Activity', activitySchema);
+export const ActivityModel = mongoose.model('Activity', activitySchema);

@@ -9,7 +9,7 @@ export interface Workout {
   activities: string[];
 }
 
-const workoutSchema = new Schema<Workout>(
+const workoutSchema = new Schema(
   {
     title: { type: String, required: true, trim: true, unique: true },
     description: { type: String, required: true, trim: true },
@@ -25,4 +25,4 @@ const workoutSchema = new Schema<Workout>(
   { timestamps: true },
 );
 
-export const WorkoutModel = mongoose.model<Workout>('Workout', workoutSchema);
+export const WorkoutModel = mongoose.model('Workout', workoutSchema);

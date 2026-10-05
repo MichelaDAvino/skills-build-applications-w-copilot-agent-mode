@@ -8,7 +8,7 @@ export interface User {
   passwordHash: string;
 }
 
-const userSchema = new Schema<User>(
+const userSchema = new Schema(
   {
     username: { type: String, required: true, trim: true, unique: true },
     email: {
@@ -25,4 +25,4 @@ const userSchema = new Schema<User>(
   { timestamps: true },
 );
 
-export const UserModel = mongoose.model<User>('User', userSchema);
+export const UserModel = mongoose.model('User', userSchema);
